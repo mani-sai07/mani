@@ -1,0 +1,42 @@
+function saveRecentCity(city) {
+  let cities = JSON.parse(localStorage.getItem("recentCities")) || [];
+
+  // Avoid duplicates
+  if (!cities.includes(city)) {
+    cities.push(city);
+  }
+
+  // Keep only last 5 searches
+  if (cities.length > 5) {
+    cities.shift();
+  }
+
+  localStorage.setItem("recentCities", JSON.stringify(cities));
+}
+function saveLastCity(city) {
+  localStorage.setItem("lastCity", city);
+}
+function handleSearch(city) {
+  fetchWeather(city);   // already exists
+  saveRecentCity(city);
+  saveLastCity(city);
+  displayRecentCities();
+}
+function displayRecentCities() {
+  const container = document.getElementById("recentCities");
+  container.innerHTML = "";
+
+  let cities = JSON.parse(localStorage.getItem("recentCities")) || [];
+
+  cities.forEach(city => {
+    const btn = document.createElement("button");
+    btn.innerText = city;
+
+    btn.addEventListener("click", () => {
+      fetchWeather(city);
+      saveLastCity(city);
+    });
+
+    container.appendChild(btn);
+  });
+}
